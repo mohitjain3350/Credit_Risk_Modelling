@@ -1,20 +1,23 @@
-# Use a lightweight Python image
+# Lightweight Python image
 FROM python:3.9-slim
 
-# Set the working directory in the container
+# Avoid Python buffering issues
+ENV PYTHONUNBUFFERED=1
+
+# Set working directory
 WORKDIR /app
 
-# Copy the requirements file into the container
+# Copy requirements first (better caching)
 COPY requirements_online.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements_online.txt
 
-# Copy the rest of the application code
+# Copy the rest of the project
 COPY . .
 
-# Expose the default Streamlit port
-EXPOSE 8501
+# Expose Streamlit port
+EXPOSE 8502
 
-# Command to run the application
-CMD ["streamlit", "run", "online_brain.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Run Streamlit app
+CMD ["streamlit", "run", "ui.py", "--server.port=8502", "--server.address=0.0.0.0"]
