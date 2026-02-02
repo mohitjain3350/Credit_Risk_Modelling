@@ -1,0 +1,8 @@
+__pycache__
+dataset/
+dataset.xlsx
+phase1.ipynb
+.git
+.gitignore
+README_*.md
+UI.py

@@ -1,6 +1,37 @@
-__pycache__/
-.ipynb_checkpoints/
-catboost_info/
-*.pkl
-dataset/
+# Environment Variables (Secrets)
 .env
+.env.local
+catboost_info/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+myenv/
+.venv/
+env/
+
+# Data (Avoid uploading large datasets)
+dataset/
+dataset.xlsx
+*.csv
+*.xls
+*.xlsx
+
+# Models (Avoid uploading large binary files if > 100MB)
+# credit_model.pkl (It is small, so we can keep it, but uncomment below to ignore)
+# *.pkl
+*.h5
+*.pt
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
