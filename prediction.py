@@ -2,6 +2,7 @@ import pickle
 import pandas as pd
 import numpy as np
 
+
 with open("credit_model.pkl", "rb") as file:
     model_data = pickle.load(file)
     model = model_data['model']
