@@ -17,7 +17,7 @@ def load_api_key():
     env_key = os.getenv("API_KEY")
     if env_key:
         return env_key, "env"
-return None, None
+    return None, None
 
 # Set the page configuration and title
 st.set_page_config(page_title="Credit Risk Modelling", page_icon="📊", layout="wide")
