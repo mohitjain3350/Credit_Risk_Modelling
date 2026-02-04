@@ -5,4 +5,5 @@ phase1.ipynb
 .git
 .gitignore
 README_*.md
+.env
 UI.py
