@@ -142,8 +142,8 @@ with st.sidebar:
     #     api_key = api_key_input.strip() if api_key_input else None
     
     if api_key:
-        if not env_api_key: # Only show this if not already shown above
-            st.success("API Key Detected! Brain Active 🧠")
+        # if not env_api_key: # Only show this if not already shown above
+        #     st.success("API Key Detected! Brain Active 🧠")
         st.markdown("### Model Sizing")
         model_choice = st.selectbox("Select Model", ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "mixtral-8x7b-32768"], index=0)
     else:
