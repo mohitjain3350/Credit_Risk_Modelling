@@ -11,7 +11,7 @@ load_dotenv()
 def load_api_key():
     # 1️⃣ Streamlit Cloud
     if "GROQ_API_KEY" in st.secrets:
-        return st.secrets["API_KEY"], "streamlit"
+        return st.secrets["GROQ_API_KEY"], "streamlit"
 
     # 2️⃣ AWS / Docker / Local
     env_key = os.getenv("GROQ_API_KEY")
