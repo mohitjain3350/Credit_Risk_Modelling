@@ -4,8 +4,8 @@ import numpy as np
 import os
 
 with open("credit_model.pkl", "rb") as file:
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "credit_model.pkl")
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    MODEL_PATH = os.path.join(BASE_DIR, "credit_model.pkl")
 
 with open(MODEL_PATH, "rb") as file:
     model_data = pickle.load(file)

@@ -4,31 +4,28 @@ import os
 from groq import Groq
 from dotenv import load_dotenv
 import time
-
 # Load environment variables from .env file
 load_dotenv()
-
 def load_api_key():
     # 1️⃣ Streamlit Cloud
-    if "GROQ_API_KEY" in st.secrets:
-        return st.secrets["GROQ_API_KEY"], "streamlit"
-
+    try:
+        if "GROQ_API_KEY" in st.secrets:
+            return st.secrets["GROQ_API_KEY"], "streamlit"
+    except (FileNotFoundError, Exception):
+        pass
     # 2️⃣ AWS / Docker / Local
     env_key = os.getenv("GROQ_API_KEY")
     if env_key:
         return env_key, "env"
     return None, None
-
 # Set the page configuration and title
 st.set_page_config(page_title="Credit Risk Modelling", page_icon="📊", layout="wide")
 st.markdown('<h1 class="main-header">🏦 Credit Risk Assessment System</h1>', unsafe_allow_html=True)
 st.title("Credit Risk Modelling")
-
 tab1, tab2 = st.tabs([
     "Credit Score Prediction",
     "Chatbot"
 ])
-
 # ------------------------------------------------------------------------------------------
 # TAB 1: PREDICTION
 # ------------------------------------------------------------------------------------------
@@ -47,7 +44,6 @@ with tab1:
             with col_b:
                 income = st.number_input('Annual Income (₹)', min_value=0, value=1200000, step=50000)
                 st.caption(f"Monthly: ₹{income//12:,.0f}")
-
     with row1_col2:
         with st.container(border=True):
             st.subheader("💰 Loan Details")
@@ -64,7 +60,6 @@ with tab1:
                 loan_to_income_ratio = loan_amount / income
                 st.progress(min(loan_to_income_ratio, 1.0))
                 st.caption(f"Loan-to-Income Ratio: {loan_to_income_ratio:.2f}")
-
     # Row 2: Credit History & Behavior (Full Width)
     with st.container(border=True):
         st.subheader("📈 Credit History")
@@ -78,14 +73,12 @@ with tab1:
             credit_utilization_ratio = st.number_input('Credit Utilization (%)', 0, 100, 30)
         with col4:
             num_open_accounts = st.number_input('Open Accounts', 1, 4, 2)
-
     st.markdown("---")
     
     # Calculate Button centered
     col_spacer_l, col_btn, col_spacer_r = st.columns([2, 1, 2])
     with col_btn:
         calculate_button = st.button('🚀 Calculate Risk', type="primary", use_container_width=True)
-
     # Button to calculate risk
     if calculate_button:
         with st.spinner('🔍 Analyzing...'):
@@ -99,7 +92,6 @@ with tab1:
         st.session_state['credit_score'] = credit_score
         st.session_state['rating'] = rating
         st.session_state['probability'] = probability
-
         # Modern Results Display
         st.markdown("### 📊 Assessment Result")
         res_col1, res_col2, res_col3 = st.columns(3)
@@ -112,8 +104,6 @@ with tab1:
             st.metric("Risk Rating", rating)
         
         st.info("💡 Tip: Use the 'Chatbot' tab to ask AI for advice on improving this score.")
-
-
 # ------------------------------------------------------------------------------------------
 # SIDEBAR - API CONFIGURATION
 # ------------------------------------------------------------------------------------------
@@ -121,7 +111,6 @@ with st.sidebar:
     st.header("🤖 AI Settings")
     # Try to get API key from environment variable first
     api_key, source = load_api_key()
-
     if api_key:
         if source == "streamlit":
             st.success("✅ Secure Mode: API Key loaded from Streamlit Secrets")
@@ -130,16 +119,6 @@ with st.sidebar:
     else:
         api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
         api_key = api_key_input.strip() if api_key_input else None
-    # st.error("❌ API Key not found. Configure secrets or environment variables.")
-    # env_api_key = os.getenv("GROQ_API_KEY")
-    
-    # if env_api_key:
-    #     api_key = env_api_key
-    #     st.success("✅ Secure Mode: API Key Loaded from Environment")
-    #     # No text input shown for maximum security
-    # else:
-    #     api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
-    #     api_key = api_key_input.strip() if api_key_input else None
     
     if api_key:
         if not api_key: # Only show this if not already shown above
@@ -149,30 +128,24 @@ with st.sidebar:
     else:
         st.error("⚠️ GROQ API Key Required")
         model_choice = None
-
 # ------------------------------------------------------------------------------------------
 # CHATBOT (ONLINE ONLY)
 # ------------------------------------------------------------------------------------------
-
 with tab2:
     st.markdown("## 💬 Intelligent Credit Assistant")
     if not api_key:
         st.warning("🔒 This feature requires an API Key. Please configure it in the .env file or sidebar.")
-
     # Store chat history
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
         # Add an initial greeting
         st.session_state.chat_history.append(("Bot", "Hello! I am your AI Credit Analyst. I can explain your risk assessment and suggest improvements."))
-
     # Display conversation
     for speaker, msg in st.session_state.chat_history:
         with st.chat_message("user" if speaker == "You" else "assistant"):
             st.write(msg)
-
     # Display input
     user_input = st.chat_input("Ask a question about your credit (e.g., 'How do I improve?')")
-
     if user_input:
         if not api_key:
             st.error("Please add your Groq API Key to proceed.")
@@ -193,7 +166,6 @@ with tab2:
                 "loan_amount": loan_amount,
                 "income": income
             }
-
             # 2. Generate Response (Direct API Call)
             try:
                 client = Groq(api_key=api_key)
@@ -207,19 +179,17 @@ with tab2:
                 
                 INSTRUCTIONS:
                 1. **Conversational Mode**:
-                   - IF the user says "Hello", "Thanks", "Bye", "Exit", "Help", or similar social triggers:
-                   - Respond naturally, politely, and briefly (1-2 sentences).
+                   - IF the user says "Hello", "Hi", "Thanks", "Bye", "Exit", "Quit" or similar social triggers:
+                   - Respond naturally, politely, and briefly (e.g., "Hello! How can I help with your credit assessment?").
                    - DO NOT use the strict Analysis/Tips format for these.
                 
-                2. **Analyst Mode** (For credit/finance questions):
+                2. **Analyst Mode** (For credit/finance/risk related questions):
                    - IF the user asks about scores, money, improvement, or risk:
                    - Follow the CRITICAL FORMATTING RULES below.
-
                 3. **Strict Rejection Mode** (For EVERYTHING else):
                    - IF the query is NOT about credit, finance, loans, or the user's risk assessment AND is NOT a greeting/exit:
                    - YOU MUST REPLY EXACTLY WITH: "Ask me about credit related queries only"
                    - Do not add anything else. Do not explain why.
-
                 CRITICAL FORMATTING RULES (For Analyst Mode only):
                 1. DO NOT use LaTeX formatting (no dollar signs like $ or $$ for math/currency). Use plain text (e.g., "INR 50,000" or "Rs.").
                 2. Keep the response SHORT and readable.
@@ -245,12 +215,10 @@ with tab2:
                     for chunk in completion:
                         if chunk.choices[0].delta.content is not None:
                             yield chunk.choices[0].delta.content
-
                 with st.chat_message("assistant"):
                     bot_reply = st.write_stream(generate_stream())
                 
                 st.session_state.chat_history.append(("Bot", bot_reply))
-
             except Exception as e:
                 st.error(f"API Error: {e}")
             
