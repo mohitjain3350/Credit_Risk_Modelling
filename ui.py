@@ -10,11 +10,11 @@ load_dotenv()
 
 def load_api_key():
     # 1️⃣ Streamlit Cloud
-    if "API_KEY" in st.secrets:
+    if "GROQ_API_KEY" in st.secrets:
         return st.secrets["API_KEY"], "streamlit"
 
     # 2️⃣ AWS / Docker / Local
-    env_key = os.getenv("API_KEY")
+    env_key = os.getenv("GROQ_API_KEY")
     if env_key:
         return env_key, "env"
     return None, None
@@ -122,14 +122,14 @@ with st.sidebar:
     # Try to get API key from environment variable first
     api_key, source = load_api_key()
 
-if api_key:
-    if source == "streamlit":
-        st.success("✅ Secure Mode: API Key loaded from Streamlit Secrets")
+    if api_key:
+        if source == "streamlit":
+            st.success("✅ Secure Mode: API Key loaded from Streamlit Secrets")
+        else:
+            st.success("✅ Secure Mode: API Key loaded from Environment Variables")
     else:
-        st.success("✅ Secure Mode: API Key loaded from Environment Variables")
-else:
-    api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
-    # api_key = api_key_input.strip() if api_key_input else None
+        api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
+        # api_key = api_key_input.strip() if api_key_input else None
     # st.error("❌ API Key not found. Configure secrets or environment variables.")
     # env_api_key = os.getenv("GROQ_API_KEY")
     
