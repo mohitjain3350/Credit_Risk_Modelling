@@ -8,6 +8,16 @@ import time
 # Load environment variables from .env file
 load_dotenv()
 
+def load_api_key():
+    # 1️⃣ Streamlit Cloud
+    if "API_KEY" in st.secrets:
+        return st.secrets["API_KEY"], "streamlit"
+
+    # 2️⃣ AWS / Docker / Local
+    env_key = os.getenv("API_KEY")
+    if env_key:
+        return env_key, "env"
+
 # Set the page configuration and title
 st.set_page_config(page_title="Credit Risk Modelling", page_icon="📊", layout="wide")
 st.markdown('<h1 class="main-header">🏦 Credit Risk Assessment System</h1>', unsafe_allow_html=True)
@@ -109,12 +119,21 @@ with tab1:
 with st.sidebar:
     st.header("🤖 AI Settings")
     # Try to get API key from environment variable first
+    api_key, source = load_api_key()
+
+if api_key:
+    if source == "streamlit":
+        st.success("✅ Secure Mode: API Key loaded from Streamlit Secrets")
+    else:
+        st.success("✅ Secure Mode: API Key loaded from Environment Variables")
+else:
+    st.error("❌ API Key not found. Configure secrets or environment variables.")
     env_api_key = os.getenv("GROQ_API_KEY")
     
-    if env_api_key:
-        api_key = env_api_key
-        st.success("✅ Secure Mode: API Key Loaded from Environment")
-        # No text input shown for maximum security
+    # if env_api_key:
+    #     api_key = env_api_key
+    #     st.success("✅ Secure Mode: API Key Loaded from Environment")
+    #     # No text input shown for maximum security
     else:
         api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
         api_key = api_key_input.strip() if api_key_input else None
