@@ -17,6 +17,7 @@ def load_api_key():
     env_key = os.getenv("API_KEY")
     if env_key:
         return env_key, "env"
+return None, None
 
 # Set the page configuration and title
 st.set_page_config(page_title="Credit Risk Modelling", page_icon="📊", layout="wide")
@@ -128,7 +129,7 @@ if api_key:
         st.success("✅ Secure Mode: API Key loaded from Environment Variables")
 else:
     api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
-    api_key = api_key_input.strip() if api_key_input else None
+    # api_key = api_key_input.strip() if api_key_input else None
     # st.error("❌ API Key not found. Configure secrets or environment variables.")
     # env_api_key = os.getenv("GROQ_API_KEY")
     
