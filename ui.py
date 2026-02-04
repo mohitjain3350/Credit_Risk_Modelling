@@ -129,7 +129,7 @@ with st.sidebar:
             st.success("✅ Secure Mode: API Key loaded from Environment Variables")
     else:
         api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
-        # api_key = api_key_input.strip() if api_key_input else None
+        api_key = api_key_input.strip() if api_key_input else None
     # st.error("❌ API Key not found. Configure secrets or environment variables.")
     # env_api_key = os.getenv("GROQ_API_KEY")
     
@@ -142,8 +142,8 @@ with st.sidebar:
     #     api_key = api_key_input.strip() if api_key_input else None
     
     if api_key:
-        # if not env_api_key: # Only show this if not already shown above
-        #     st.success("API Key Detected! Brain Active 🧠")
+        if not api_key: # Only show this if not already shown above
+            st.success("API Key Detected! Brain Active 🧠")
         st.markdown("### Model Sizing")
         model_choice = st.selectbox("Select Model", ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "mixtral-8x7b-32768"], index=0)
     else:
@@ -214,6 +214,11 @@ with tab2:
                 2. **Analyst Mode** (For credit/finance questions):
                    - IF the user asks about scores, money, improvement, or risk:
                    - Follow the CRITICAL FORMATTING RULES below.
+
+                3. **Strict Rejection Mode** (For EVERYTHING else):
+                   - IF the query is NOT about credit, finance, loans, or the user's risk assessment AND is NOT a greeting/exit:
+                   - YOU MUST REPLY EXACTLY WITH: "Ask me about credit related queries only"
+                   - Do not add anything else. Do not explain why.
 
                 CRITICAL FORMATTING RULES (For Analyst Mode only):
                 1. DO NOT use LaTeX formatting (no dollar signs like $ or $$ for math/currency). Use plain text (e.g., "INR 50,000" or "Rs.").
