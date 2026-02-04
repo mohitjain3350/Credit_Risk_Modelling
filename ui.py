@@ -127,16 +127,18 @@ if api_key:
     else:
         st.success("✅ Secure Mode: API Key loaded from Environment Variables")
 else:
-    st.error("❌ API Key not found. Configure secrets or environment variables.")
-    env_api_key = os.getenv("GROQ_API_KEY")
+    api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
+    api_key = api_key_input.strip() if api_key_input else None
+    # st.error("❌ API Key not found. Configure secrets or environment variables.")
+    # env_api_key = os.getenv("GROQ_API_KEY")
     
     # if env_api_key:
     #     api_key = env_api_key
     #     st.success("✅ Secure Mode: API Key Loaded from Environment")
     #     # No text input shown for maximum security
-    else:
-        api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
-        api_key = api_key_input.strip() if api_key_input else None
+    # else:
+    #     api_key_input = st.text_input("Groq API Key", type="password", placeholder="Enter gsk_... key here")
+    #     api_key = api_key_input.strip() if api_key_input else None
     
     if api_key:
         if not env_api_key: # Only show this if not already shown above
