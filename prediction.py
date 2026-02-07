@@ -63,6 +63,12 @@ def predict(age, income, loan_amount, loan_tenure_months, avg_dpd_per_delinquenc
     input_df = prepare_input(age, income, loan_amount, loan_tenure_months, avg_dpd_per_delinquency,
                              deliquency_ratio, credit_utilization_ratio, num_open_accounts, residence_type,
                              loan_purpose, loan_type)
+    
+    if income <= 0:
+        return 1.0, 300, "📉 Poor Score"
+    
+    if loan_amount <= 0:
+        pass
 
     probability, credit_score, rating = calculate_credit_score(input_df)
 
